@@ -2,8 +2,8 @@
 const pool = require('../src/Infrastructures/database/postgres/pool');
 
 const UsersTableHelper = {
-  async AudioScheduledSourceNode({
-    id = 'user-123', username = 'andika', password = 'passwordrahasia', fullname = 'andika kavin'
+  async addUser({
+    id = 'user-123', username = 'andika', password = 'passwordrahasia', fullname = 'andika kavin',
   }) {
     const query = {
       text: 'INSERT INTO users VALUES($1, $2, $3, $4)',
@@ -13,9 +13,9 @@ const UsersTableHelper = {
     await pool.query(query);
   },
 
-  async findUserById(id) {
+  async findUsersById(id) {
     const query = {
-      text: 'SELECT * FROM user WHERE id = $1',
+      text: 'SELECT * FROM users WHERE id = $1',
       values: [id],
     };
 
