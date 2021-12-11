@@ -1,4 +1,5 @@
 const AddUserUseCase = require('../../../../Applications/use_case/AddUserUseCase');
+const DomainErrorTranslator = require('../../../../Commons/exceptions/DomainErrorTranslator');
 
 class UserHandler {
   constructor(container) {
@@ -8,17 +9,28 @@ class UserHandler {
   }
 
   async postUserHandler(request, h) {
-    const addUserUseCase = await this._container.getInstance(AddUserUseCase.name);
-    const addedUser = await addUserUseCase.execute(request.payload);
+    try {
+      const addUserUseCase = await this._container.getInstance(AddUserUseCase.name);
+      const addedUser = await addUserUseCase.execute(request.payload);
 
-    const response = h.response({
-      status: 'success',
-      data: {
-        addedUser,
-      },
-    });
-    response.code(201);
-    return response;
+      const response = h.response({
+        status: 'success',
+        data: {
+          addedUser,
+        },
+      });
+      response.code(201);
+      return response;
+    } catch (e) {
+      const translatedError = DomainErrorTranslator.translate(e);
+
+      const response = h.response({
+        status: 'fail',
+        message: translatedError.message,
+      });
+      response.code(translatedError.statusCode);
+      return response;
+    }
   }
 }
 
