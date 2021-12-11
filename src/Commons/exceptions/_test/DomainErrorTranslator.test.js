@@ -12,4 +12,12 @@ describe('DomainErrorTranslator', () => {
     expect(DomainErrorTranslator.translate(new InvariantError('REGISTER_USER.USERNAME_CONTAIN_RESTRICTED_CHARACTER')))
       .toStrictEqual(new InvariantError('tidak dapat membuat user baru karena username mengandung karakter terlarang'));
   });
+
+  it('should return original error', () => {
+    const error = new Error('some_error_message');
+
+    const translatedError = DomainErrorTranslator.translate(error);
+
+    expect(translatedError).toStrictEqual(error);
+  });
 });
